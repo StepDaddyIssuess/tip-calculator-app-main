@@ -1,14 +1,20 @@
+
 "use strict";
 
 /*  Error functions */
 
 function error(){
+    const bill = document.getElementById("bill")
     const persons = document.getElementById("persons")
     const error = document.querySelector('.error')
-    error.style.visibility = 'visible';
-    persons.style.border = "2px solid red";
-
-    reset();
+    if (persons.value == ''){
+        error.style.visibility = 'visible';
+        persons.style.border = "2px solid red";
+        persons.addEventListener("input", () => {
+            const custom = document.getElementById("custom")
+            custom.value = 0;
+        })
+    } 
 }
 
 function errorPerson(){
@@ -24,110 +30,46 @@ function errorPerson(){
     }
 }
 
-/* Tip functions 5, 10, 15, 25, 50, custom*/
 
-//tip %5
-function tip5(){
-    const bill = Number(document.getElementById("bill").value)
-    const tip_amount = document.getElementById("tip-amount")
-    const total = document.getElementById("total")
-    const persons = Number(document.getElementById("persons").value)
+function tip_Amount_Each(bill, tip, persons){
+        return ((bill * Number(tip / 100)) / persons).toFixed(2);
 
-    const tip_Amount_Each_Person = ((bill * 0.05) / persons).toFixed(2);
-    const total_Each_Person = ((bill * 0.05 + bill) / persons).toFixed(2);
-
-    console.log("tip_Amount_Each_Person:", tip_Amount_Each_Person);
-    if(tip_Amount_Each_Person == Infinity || isNaN(tip_Amount_Each_Person) || tip_Amount_Each_Person == 0){
-        error()
-    }
-    else{
-        tip_amount.innerText = `$ ${tip_Amount_Each_Person}`;
-        total.innerText = `$ ${total_Each_Person}`
-    }
 }
 
-//tip 10%
-function tip10(){
-    const bill = Number(document.getElementById("bill").value)
-    const tip_amount = document.getElementById("tip-amount")
-    const total = document.getElementById("total")
-    const persons = Number(document.getElementById("persons").value)
-
-    const tip_Amount_Each_Person = ((bill * 0.10) / persons).toFixed(2);
-    const total_Each_Person = ((bill * 0.10 + bill) / persons).toFixed(2);
-
-    console.log("tip_Amount_Each_Person:", tip_Amount_Each_Person);
-    if(tip_Amount_Each_Person == Infinity || isNaN(tip_Amount_Each_Person) || tip_Amount_Each_Person == 0){
-        error()
-    }
-    else{
-        tip_amount.innerText = `$ ${tip_Amount_Each_Person}`;
-        total.innerText = `$ ${total_Each_Person}`
-    }
+function total_Amount(bill , tip, persons){
+        return ((bill * Number(tip / 100) + bill) / persons).toFixed(2);
 }
 
-//tip 15%
-function tip15(){
-    const bill = Number(document.getElementById("bill").value)
-    const tip_amount = document.getElementById("tip-amount")
-    const total = document.getElementById("total")
-    const persons = Number(document.getElementById("persons").value)
+/* Tip function*/
 
-    const tip_Amount_Each_Person = ((bill * 0.15) / persons).toFixed(2);
-    const total_Each_Person = ((bill * 0.15 + bill) / persons).toFixed(2);
+function handleTip(){
+    const btns = document.querySelectorAll(".tip-btn");
+    for (const btn of btns){
+        btn.addEventListener("click", function(){
 
-    console.log("tip_Amount_Each_Person:", tip_Amount_Each_Person);
-    if(tip_Amount_Each_Person == Infinity || isNaN(tip_Amount_Each_Person) || tip_Amount_Each_Person == 0){
-        error()
+            // Variables
+            const bill = Number(document.getElementById("bill").value)
+            const tip_amount = document.getElementById("tip-amount")
+            const total = document.getElementById("total")
+            const persons = Number(document.getElementById("persons").value)
+
+            //Math to get Tip Amount /person and total/person
+            const tip_Amount_Each_Person = tip_Amount_Each(bill, this.value, persons);
+            const total_Each_Person = total_Amount(bill, this.value, persons);
+
+
+            //Error handling
+            console.log("tip_Amount_Each_Person:", tip_Amount_Each_Person);
+            if(tip_Amount_Each_Person == Infinity || isNaN(tip_Amount_Each_Person) || tip_Amount_Each_Person == 0){
+                error()
+            }
+            else{
+                tip_amount.innerText = `$ ${tip_Amount_Each_Person}`;
+                total.innerText = `$ ${total_Each_Person}`
+            }
+        })
     }
-    else{
-        tip_amount.innerText = `$ ${tip_Amount_Each_Person}`;
-        total.innerText = `$ ${total_Each_Person}`
-    }
-}
-
-
-//tip 25%
-function tip25(){
-    const bill = Number(document.getElementById("bill").value)
-    const tip_amount = document.getElementById("tip-amount")
-    const total = document.getElementById("total")
-    const persons = Number(document.getElementById("persons").value)
-
-    const tip_Amount_Each_Person = ((bill * 0.25) / persons).toFixed(2);
-    const total_Each_Person = ((bill * 0.25 + bill) / persons).toFixed(2);
-
-    console.log("tip_Amount_Each_Person:", tip_Amount_Each_Person);
-    if(tip_Amount_Each_Person == Infinity || isNaN(tip_Amount_Each_Person) || tip_Amount_Each_Person == 0){
-        error()
-    }
-    else{
-        tip_amount.innerText = `$ ${tip_Amount_Each_Person}`;
-        total.innerText = `$ ${total_Each_Person}`
-    }
-}
-
-
-//tip 50%
-
-function tip50(){
-    const bill = Number(document.getElementById("bill").value)
-    const tip_amount = document.getElementById("tip-amount")
-    const total = document.getElementById("total")
-    const persons = Number(document.getElementById("persons").value)
-
-    const tip_Amount_Each_Person = ((bill * 0.50) / persons).toFixed(2);
-    const total_Each_Person = ((bill * 0.50 + bill) / persons).toFixed(2);
-
-    console.log("tip_Amount_Each_Person:", tip_Amount_Each_Person);
-    if(tip_Amount_Each_Person == Infinity || isNaN(tip_Amount_Each_Person) || tip_Amount_Each_Person == 0){
-        error()
-    }
-    else{
-        tip_amount.innerText = `$ ${tip_Amount_Each_Person}`;
-        total.innerText = `$ ${total_Each_Person}`
-    }
-}
+}   
 
 function tipCustom(){
     const bill = Number(document.getElementById("bill").value)
@@ -173,7 +115,8 @@ function reset(){
 
 
 /* Removes Error when value of people != 0*/
-document.getElementById("persons").addEventListener('input', errorPerson)
+document.getElementById("persons").addEventListener('input', errorPerson);
 
-document.getElementById("custom").addEventListener("input", tipCustom);
+document.getElementById("custom").addEventListener("input", tipCustom)
 
+handleTip();
